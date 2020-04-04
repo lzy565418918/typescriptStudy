@@ -1,4 +1,10 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 console.log("hello typescript");
 function getdata() { }
 // 字符串类型
@@ -212,4 +218,79 @@ m.add(u);
 m.add(a);
 // 修饰器:装饰器是一种特殊类型的声明，它能够被附加到类声明，方法，属性，参数上，可以修改类的行为。
 // 通俗的讲，装饰器是一个方法（function），可以注入到类，方法，属性，参数上来扩展类，属性，方法，参数的功能
-// 常见的装饰器有
+// 常见的装饰器有：类装饰器，属性装饰器，方法装饰器，参数装饰器
+// 装饰器的写法：普通装饰器（无法传参），装饰器工厂（可以传参）
+// 1.类装饰器，在类声明之前被声明。应用于类构造函数，可以用来监视，修改或替换类定义。传入参数
+// 定义一个装饰器(这是普通装饰器，不可传参)
+// function logClass(key: any) {
+//   console.log(key); // 这个key就是下面的Http
+//   // 扩展所修饰类的属性
+//   key.prototype.url = "动态扩展的属性";
+//   key.prototype.run = function() {
+//     console.log("我是一个run方法,url:", this.url);
+//   };
+// }
+// // 表明修饰哪个类
+// @logClass
+// // d定义一个类
+// class Http {
+//   constructor() {}
+//   getdata() {}
+// }
+// var h: any = new Http();
+// h.run();
+// 这是装饰器工厂，可传参
+function logClass(params) {
+    console.log(params); // 这个params就是下面修饰器传入的参数
+    return function (target) {
+        // 这个target就变成了修饰的类，也就是下面的Http
+        console.log(target);
+        target.prototype.url = params;
+    };
+    // 重载构造函数
+    // return class extends params {
+    //   url = "我是修饰器改了构造函数后的url";
+    //   getdata() {
+    //     console.log(this.url + "我是改了构造函数后的getdata方法");
+    //   }
+    // };
+}
+// 表明修饰哪个类
+var Http = /** @class */ (function () {
+    function Http() {
+        this.url = "我是构造函数的url";
+    }
+    Http.prototype.getdata = function () {
+        console.log("我是构造函数的getdata方法");
+    };
+    Http = __decorate([
+        logClass("改改")
+    ], Http);
+    return Http;
+}());
+var h = new Http();
+console.log(h.url);
+h.getdata();
+// 属性装饰器，可以传两个参数
+// params----------参数“https://www.baidu.com”
+// target----------类ppt的原型对象(ppt.prototype)
+// attr------------被修饰的静态成员url
+function logAttr(params) {
+    return function (target, attr) {
+        console.log(params);
+        console.log("---------------");
+        console.log(target);
+        console.log("---------------");
+        console.log(attr);
+        target[attr] = params;
+    };
+}
+var ppt = /** @class */ (function () {
+    function ppt() {
+    }
+    __decorate([
+        logAttr("https://www.baidu.com")
+    ], ppt.prototype, "url", void 0);
+    return ppt;
+}());
+// var pp = new ppt()

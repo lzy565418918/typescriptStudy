@@ -389,3 +389,36 @@ class Docx {
 var d = new Docx();
 // 调用之后就变了不
 d.getsome(123, 321, "222");
+
+console.log("以下是方法参数修饰器");
+// 方法参数修饰器
+// 参数装饰器表达式会在运行时当作函数被调用，可以使用参数装饰器为类的原型增加一些元素数据
+
+// 定义一个装饰器
+function logParams(params: any) {
+  return (target: any, funcName: any, index: number) => {
+    console.log("params:------------", params); // 装饰器后面传入的参数
+    console.log("target:------------", target); // 对静态成员来说时类的构造函数，对实例成员来说是类的原型对象
+    console.log("funcName:------------", funcName); // 方法的名字
+    console.log("index:------------", index); // 参数在函数参数列表中的索引
+  };
+}
+
+// 然后先定义一个类
+class pdf {
+  public url: string | undefined;
+  constructor(u: string | undefined) {
+    this.url = u;
+  }
+
+  getdata(@logParams("xxxuuid") uuid: any, @logParams("xxxval") val: any) {
+    console.log("我是你爸爸", uuid);
+  }
+}
+
+// var pd = new pdf('')
+
+// pd.getdata()
+
+// 装饰器的执行顺序：同一级别的右下->左上
+//               ： 不同级别的，属性装饰器 -> 方法装饰器 -> 方法参数装饰器 -> 类装饰器

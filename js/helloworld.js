@@ -5,6 +5,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 console.log("hello typescript");
 function getdata() { }
 // 字符串类型
@@ -339,3 +342,32 @@ var Docx = /** @class */ (function () {
 var d = new Docx();
 // 调用之后就变了不
 d.getsome(123, 321, "222");
+console.log("以下是方法参数修饰器");
+// 方法参数修饰器
+// 参数装饰器表达式会在运行时当作函数被调用，可以使用参数装饰器为类的原型增加一些元素数据
+// 定义一个装饰器
+function logParams(params) {
+    return function (target, funcName, index) {
+        console.log("params:------------", params); // 装饰器后面传入的参数
+        console.log("target:------------", target); // 对静态成员来说时类的构造函数，对实例成员来说是类的原型对象
+        console.log("funcName:------------", funcName); // 方法的名字
+        console.log("index:------------", index); // 参数在函数参数列表中的索引
+    };
+}
+// 然后先定义一个类
+var pdf = /** @class */ (function () {
+    function pdf(u) {
+        this.url = u;
+    }
+    pdf.prototype.getdata = function (uuid, val) {
+        console.log("我是你爸爸", uuid);
+    };
+    __decorate([
+        __param(0, logParams("xxxuuid")), __param(1, logParams("xxxval"))
+    ], pdf.prototype, "getdata", null);
+    return pdf;
+}());
+// var pd = new pdf('')
+// pd.getdata()
+// 装饰器的执行顺序：同一级别的右下->左上
+//               ： 不同级别的，属性装饰器 -> 方法装饰器 -> 方法参数装饰器 -> 类装饰器

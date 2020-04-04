@@ -294,3 +294,48 @@ var ppt = /** @class */ (function () {
     return ppt;
 }());
 // var pp = new ppt()
+console.log("以下是方法装饰器：");
+// 方法装饰器：
+// 它会被应用到方法的 属性描述符 上，可以用来监视，修改或者替换方法定义
+// 方法装饰器会在运行时传入三个参数
+function logFunc(params) {
+    return function (target, funcName, desc) {
+        console.log("params--------------------", params); // 修饰器后面传入的参数
+        console.log("target--------------------", target); // 类的构造函数/实例化的原型对象
+        console.log("funcName--------------------", funcName); // 被修饰的方法的方法名
+        console.log("desc--------------------", desc.value); // 被修饰的方法
+        // case1：替换Docx类中的getsome方法，在这之前，先将老方法保存一下
+        var ofunc = desc.value;
+        // 开始重写getsome方法
+        desc.value = function () {
+            var arg = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                arg[_i] = arguments[_i];
+            }
+            arg = arg.map(function (item) { return String(item); });
+            console.log(arg);
+            // 重写好之后，再把原本的getsome方法加上去（类似于继承）
+            ofunc.apply(this, arg);
+        };
+    };
+}
+// 定义一个类
+var Docx = /** @class */ (function () {
+    function Docx() {
+    }
+    // 做一个小案例case：调用getsome方法时，把传入的参数类型全部转换成string类型，注意听课
+    Docx.prototype.getsome = function () {
+        var arg = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            arg[_i] = arguments[_i];
+        }
+        console.log("方法修饰器");
+    };
+    __decorate([
+        logFunc("xxxx")
+    ], Docx.prototype, "getsome", null);
+    return Docx;
+}());
+var d = new Docx();
+// 调用之后就变了不
+d.getsome(123, 321, "222");

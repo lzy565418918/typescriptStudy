@@ -18,9 +18,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-console.log('hello typescript');
-function getdata() {
-}
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+console.log("hello typescript");
+function getdata() { }
 // 字符串类型
 var str = "hello typescript";
 // 布尔类型
@@ -33,9 +35,9 @@ var arr1 = [4, 8];
 // 2
 var arr2 = [1, 2, 3];
 // 3
-var arrr3 = [1, true, 'ds'];
+var arrr3 = [1, true, "ds"];
 // 元组类型(给数组中的位置给定类型)，属于数组的一种
-var arr3 = [123, '123'];
+var arr3 = [123, "123"];
 // 枚举类型（enum）在自然语言中用相应的单词代表某一状态
 var Flag;
 (function (Flag) {
@@ -63,12 +65,12 @@ var Er;
 var r = Er.null;
 console.log(r);
 // 任意类型（any）
-var op = '123';
+var op = "123";
 op = 0;
 op = true;
 // 任意类型的用法
-var Box = document.querySelector('#box');
-Box.style.color = 'red';
+var Box = document.querySelector("#box");
+Box.style.color = "red";
 console.log(Box);
 // null 类型 和 undefined类型
 // var num1: number
@@ -81,7 +83,7 @@ var num1;
 console.log(num1);
 // void类型，方法无返回值
 function run() {
-    console.log('run');
+    console.log("run");
 }
 run();
 function run1() {
@@ -109,7 +111,7 @@ run1();
 // ts中
 // 1函数声明式
 function func1() {
-    return 'asd';
+    return "asd";
 }
 // 2匿名函数
 var func2 = function () {
@@ -128,17 +130,17 @@ function getinfo(name, age) {
 // 方法的可选参数
 function qq(name, age) {
     if (age)
-        console.log(name + '----' + age);
+        console.log(name + "----" + age);
     else
-        console.log(name + '----' + '年龄保密');
+        console.log(name + "----" + "年龄保密");
 }
-qq('sasa');
+qq("sasa");
 // TS中的默认参数
 function qw(name, age) {
     if (age === void 0) { age = 0; }
-    console.log(name + '----' + age);
+    console.log(name + "----" + age);
 }
-qw('mm');
+qw("mm");
 // TS中的剩余参数
 function sum() {
     var result = [];
@@ -469,82 +471,196 @@ m.add('1');
 m.add('51');
 m.add('100');
 console.log(m.min());
-// 装饰器
-// 1.类装饰器,在不修改类的前提下，扩展类的功能
-// 普通装饰器
-// 可以用来重载类
-function logclass(params) {
-    //params就是当前类
-    console.log(params);
-    // 给类扩展属性
-    params.prototype.apiUrl = 'xxx';
-    // 给类扩展方法
-    params.prototype.run = function () {
-        console.log('kuozhan');
+var setData = function (value) {
+    return value;
+};
+console.log(setData("第一种泛型"));
+var func = function (val) {
+    return val;
+};
+console.log(func("第二种泛型"));
+// 类的泛型：把类作为参数来约束数据传入的类型(操作数据库表)
+var MysqlDb = /** @class */ (function () {
+    function MysqlDb() {
+    }
+    // 把User类传入约束数据
+    MysqlDb.prototype.add = function (info) {
+        console.log(info);
+        return true;
     };
-    // 重载：
-    return /** @class */ (function (_super) {
-        __extends(class_1, _super);
-        function class_1() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.name = '修饰器重载后的';
-            return _this;
-        }
-        class_1.prototype.getdata = function () {
-            console.log(this.name + '方法');
-        };
-        return class_1;
-    }(params));
+    return MysqlDb;
+}());
+// 定义几个类
+var User = /** @class */ (function () {
+    function User(f, s) {
+        this.username = f;
+        this.password = s;
+    }
+    return User;
+}());
+var u = new User("admin", "123");
+var Article = /** @class */ (function () {
+    function Article(a, b, c) {
+        this.title = a;
+        this.author = b;
+        this.status = c;
+    }
+    return Article;
+}());
+var a = new Article("淡黄的长裙，蓬松的头发", "nine one");
+// 指定泛型类,来验证数据的合法性
+var mm = new MysqlDb();
+mm.add(u);
+mm.add(a);
+// 修饰器:装饰器是一种特殊类型的声明，它能够被附加到类声明，方法，属性，参数上，可以修改类的行为。
+// 通俗的讲，装饰器是一个方法（function），可以注入到类，方法，属性，参数上来扩展类，属性，方法，参数的功能
+// 常见的装饰器有：类装饰器，属性装饰器，方法装饰器，参数装饰器
+// 装饰器的写法：普通装饰器（无法传参），装饰器工厂（可以传参）
+// 1.类装饰器，在类声明之前被声明。应用于类构造函数，可以用来监视，修改或替换类定义。传入参数
+// 定义一个装饰器(这是普通装饰器，不可传参)
+// function logClass(key: any) {
+//   console.log(key); // 这个key就是下面的Http
+//   // 扩展所修饰类的属性
+//   key.prototype.url = "动态扩展的属性";
+//   key.prototype.run = function() {
+//     console.log("我是一个run方法,url:", this.url);
+//   };
+// }
+// // 表明修饰哪个类
+// @logClass
+// // d定义一个类
+// class Http {
+//   constructor() {}
+//   getdata() {}
+// }
+// var h: any = new Http();
+// h.run();
+// 这是装饰器工厂，可传参
+function logClass(params) {
+    console.log(params); // 这个params就是下面修饰器传入的参数
+    return function (target) {
+        // 这个target就变成了修饰的类，也就是下面的Http
+        console.log(target);
+        target.prototype.url = params;
+    };
+    // 重载构造函数
+    // return class extends params {
+    //   url = "我是修饰器改了构造函数后的url";
+    //   getdata() {
+    //     console.log(this.url + "我是改了构造函数后的getdata方法");
+    //   }
+    // };
 }
+// 表明修饰哪个类
 var Http = /** @class */ (function () {
     function Http() {
-        this.name = '重载';
+        this.url = "我是构造函数的url";
     }
     Http.prototype.getdata = function () {
-        console.log(this.name + '方法');
+        console.log("我是构造函数的getdata方法");
     };
     Http = __decorate([
-        logclass
+        logClass("改改")
     ], Http);
     return Http;
 }());
 var h = new Http();
-console.log(h.apiUrl);
-h.run();
+console.log(h.url);
 h.getdata();
-// 装饰器工厂,用的非常多
-function log(params) {
-    return function (el) {
-        console.log(params, 'params');
-        el.prototype.url = params;
-    };
-}
-var he = /** @class */ (function () {
-    function he() {
-    }
-    he.prototype.getdata = function () {
-    };
-    he = __decorate([
-        log('http://www.baidu.com')
-    ], he);
-    return he;
-}());
-var qwe = new he();
-qwe.url;
-// 属性装饰器
-function attr(params) {
-    return function (e, attr) {
-        console.log(e);
-        console.log('---------------');
+// 属性装饰器，可以传两个参数
+// params----------参数“https://www.baidu.com”
+// target----------类ppt的原型对象(ppt.prototype)
+// attr------------被修饰的静态成员url
+function logAttr(params) {
+    return function (target, attr) {
+        console.log(params);
+        console.log("---------------");
+        console.log(target);
+        console.log("---------------");
         console.log(attr);
+        target[attr] = params;
     };
 }
-var Qi = /** @class */ (function () {
-    function Qi() {
+var ppt = /** @class */ (function () {
+    function ppt() {
     }
     __decorate([
-        attr('属性装饰器内容')
-    ], Qi.prototype, "url", void 0);
-    return Qi;
+        logAttr("https://www.baidu.com")
+    ], ppt.prototype, "url", void 0);
+    return ppt;
 }());
-// 方法装饰器
+// var pp = new ppt()
+console.log("以下是方法装饰器：");
+// 方法装饰器：
+// 它会被应用到方法的 属性描述符 上，可以用来监视，修改或者替换方法定义
+// 方法装饰器会在运行时传入三个参数
+function logFunc(params) {
+    return function (target, funcName, desc) {
+        console.log("params--------------------", params); // 修饰器后面传入的参数
+        console.log("target--------------------", target); // 类的构造函数/实例化的原型对象
+        console.log("funcName--------------------", funcName); // 被修饰的方法的方法名
+        console.log("desc--------------------", desc.value); // 被修饰的方法
+        // case1：替换Docx类中的getsome方法，在这之前，先将老方法保存一下
+        var ofunc = desc.value;
+        // 开始重写getsome方法
+        desc.value = function () {
+            var arg = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                arg[_i] = arguments[_i];
+            }
+            arg = arg.map(function (item) { return String(item); });
+            console.log(arg);
+            // 重写好之后，再把原本的getsome方法加上去（类似于继承）
+            ofunc.apply(this, arg);
+        };
+    };
+}
+// 定义一个类
+var Docx = /** @class */ (function () {
+    function Docx() {
+    }
+    // 做一个小案例case：调用getsome方法时，把传入的参数类型全部转换成string类型，注意听课
+    Docx.prototype.getsome = function () {
+        var arg = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            arg[_i] = arguments[_i];
+        }
+        console.log("方法修饰器");
+    };
+    __decorate([
+        logFunc("xxxx")
+    ], Docx.prototype, "getsome", null);
+    return Docx;
+}());
+var d = new Docx();
+// 调用之后就变了不
+d.getsome(123, 321, "222");
+console.log("以下是方法参数修饰器");
+// 方法参数修饰器
+// 参数装饰器表达式会在运行时当作函数被调用，可以使用参数装饰器为类的原型增加一些元素数据
+// 定义一个装饰器
+function logParams(params) {
+    return function (target, funcName, index) {
+        console.log("params:------------", params); // 装饰器后面传入的参数
+        console.log("target:------------", target); // 对静态成员来说时类的构造函数，对实例成员来说是类的原型对象
+        console.log("funcName:------------", funcName); // 方法的名字
+        console.log("index:------------", index); // 参数在函数参数列表中的索引
+    };
+}
+// 然后先定义一个类
+var pdf = /** @class */ (function () {
+    function pdf(u) {
+        this.url = u;
+    }
+    pdf.prototype.getdata = function (uuid, val) {
+        console.log("我是你爸爸", uuid);
+    };
+    __decorate([
+        __param(0, logParams("xxxuuid")), __param(1, logParams("xxxval"))
+    ], pdf.prototype, "getdata", null);
+    return pdf;
+}());
+// var pd = new pdf('')
+// pd.getdata()
+// 装饰器的执行顺序：同一级别的右下->左上
+//               ： 不同级别的，属性装饰器 -> 方法装饰器 -> 方法参数装饰器 -> 类装饰器
